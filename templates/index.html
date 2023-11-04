@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Snake</title>
+	<script src="https://unpkg.com/htmx.org@1.9.7"
+		integrity="sha384-EAzY246d6BpbWR7sQ8+WEm40J8c3dHFsqC58IgPlh4kMbRRI6P6WA+LA/qGAyAu8"
+		crossorigin="anonymous"></script>
+	<style>
+		.field {
+			display: flex;
+			flex-direction: column;
+
+			--squares-gap: 3px;
+			--empty-cell-color: gray;
+			--head-color: red;
+			gap: var(--squares-gap);
+
+		}
+
+		.row {
+			display: flex;
+			direction: row;
+			gap: var(--squares-gap);
+		}
+
+		.cell {
+			width: 30px;
+			height: 30px;
+			background-color: var(--empty-cell-color);
+
+		}
+
+		.head.cell {
+			background-color: var(--head-color);
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Snake using htmx</h1>
+	<form hx-post="/start" hx-swap="outerHTML">
+		<label for="first_name">Height
+			<input name="height" type="number" min="1" max="40" value="5" />
+		</label>
+		<label>
+			<input name="width" type="number" min="1" max="60" value="5" />
+		</label>
+		<button>
+			Start game
+		</button>
+	</form>
+</body>
+
+</html>
