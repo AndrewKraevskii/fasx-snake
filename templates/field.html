@@ -1,10 +1,11 @@
-<div class="field">
+<form class="field" hx-post="/update" hx-trigger="every 5s" hx-swap="outerHTML">
+  <input name="field" type="hidden" value='{{field|tojson}}' />
   {% for row in field %}
   {% set outer_loop = loop %}
   <div class="row">
     {% for cell in row %}
-    <div class="cell {{cell.class}}">{{loop.index}}:{{outer_loop.index}}</div>
+    <div class="cell {{cell.cell_class}}">{{loop.index}}:{{outer_loop.index}}</div>
     {% endfor %}
   </div>
   {% endfor %}
-</div>
+</form>

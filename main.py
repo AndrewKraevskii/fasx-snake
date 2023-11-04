@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, List, Dict, Any
 
 from fastapi import (
     Cookie,
@@ -14,6 +14,9 @@ from fastapi import (
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from random import randint
+from pydantic import BaseModel
+import json
+
 
 app = FastAPI()
 
@@ -26,11 +29,16 @@ def get_index(request: Request) -> HTMLResponse:
 
 
 def get_field(height: int, width: int):
-    field = [[{"class": ""} for width in range(width)] for _ in range(height)]
-    rw, rh = randint(0, width), randint(0, height)
-    field[rh][rw]["class"] = "head"
+    field = [[{"cell_class": ""} for width in range(width)] for _ in range(height)]
+    rw, rh = randint(0, width - 1), randint(0, height - 1)
+    field[rh][rw]["cell_class"] = "head"
     return field
 
+
+def add_to_field(field: list[list[dict]]):
+    rw, rh = randint(0, len(field[0]) - 1), randint(0, len(field) - 1)
+    field[rh][rw]["cell_class"] = "head"
+    return field
 
 
 @app.post("/start")
@@ -42,6 +50,18 @@ def start_game(
     )
 
 
-@app.post("/login/")
-async def get(username: Annotated[str, Form()], password: Annotated[str, Form()]):
-    return {"username": username}
+class Cell(BaseModel):
+    cell_class: str
+
+
+class Field(BaseModel):
+    field: list[list[Cell]]
+
+
+@app.post("/update")
+def start_game(request: Request, field: Annotated[Any, Form()]) -> HTMLResponse:
+    # TODO: find way to check for list[list[dict]] in Form without json.loads
+    field = json.loads(field)
+    return templates.TemplateResponse(
+        "field.html", {"request": request, "field": add_to_field(field)}
+    )
